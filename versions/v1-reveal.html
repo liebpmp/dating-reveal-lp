@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Model gesucht</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0a0a0a;
+            color: #f5f5f5;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Hero - looks like legit casting page */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 80%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #d4af37;
+            margin-bottom: 32px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #d4af37, #f0d060);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-sub {
+            font-size: 18px;
+            color: #888;
+            margin-bottom: 40px;
+            max-width: 360px;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            font-size: 13px;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-hint svg {
+            width: 20px;
+            height: 20px;
+            stroke: #555;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
+
+        /* The Reveal */
+        .reveal {
+            padding: 80px 24px;
+            text-align: center;
+        }
+
+        .reveal-emoji {
+            font-size: 48px;
+            margin-bottom: 24px;
+        }
+
+        .reveal h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.3;
+        }
+
+        .reveal-text {
+            font-size: 17px;
+            color: #bbb;
+            line-height: 1.8;
+            max-width: 400px;
+            margin: 0 auto 16px;
+        }
+
+        .reveal-text em {
+            color: #f5f5f5;
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 16px;
+            padding: 32px 28px;
+            margin: 40px auto;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .highlight-box p {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.5;
+            color: #f5f5f5;
+        }
+
+        .highlight-box p span {
+            color: #d4af37;
+        }
+
+        /* Why section */
+        .why {
+            padding: 60px 24px;
+        }
+
+        .why h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .why-sub {
+            text-align: center;
+            color: #888;
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+
+        .why-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .why-card p {
+            font-size: 16px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .why-card p strong {
+            color: #f5f5f5;
+        }
+
+        /* About */
+        .about {
+            padding: 60px 24px;
+            text-align: center;
+        }
+
+        .about h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 32px;
+        }
+
+        .about-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            margin: 0 auto 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            border: 2px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .about-traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            max-width: 400px;
+            margin: 0 auto 32px;
+        }
+
+        .trait {
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .about-bio {
+            font-size: 16px;
+            color: #999;
+            line-height: 1.7;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        /* Looking for */
+        .looking-for {
+            padding: 60px 24px;
+        }
+
+        .looking-for h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .check-list {
+            list-style: none;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        .check-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 16px;
+            color: #ccc;
+        }
+
+        .check-list li:last-child {
+            border-bottom: none;
+        }
+
+        .check-list li .check {
+            color: #d4af37;
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .bonus {
+            text-align: center;
+            margin-top: 24px;
+            padding: 16px;
+            background: rgba(212, 175, 55, 0.06);
+            border-radius: 12px;
+            font-size: 14px;
+            color: #999;
+            max-width: 380px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .bonus span {
+            color: #d4af37;
+        }
+
+        /* CTA */
+        .cta {
+            padding: 80px 24px;
+            text-align: center;
+        }
+
+        .cta-intro {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        .cta h2 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .cta-sub {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto 16px;
+            padding: 18px 32px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37, #c49b2a);
+            color: #0a0a0a;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #f5f5f5;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .cta-promise {
+            margin-top: 24px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Divider */
+        .divider {
+            width: 40px;
+            height: 2px;
+            background: rgba(212, 175, 55, 0.3);
+            margin: 0 auto;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 40px 24px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .footer p {
+            font-size: 13px;
+            color: #444;
+            line-height: 1.8;
+        }
+
+        .footer a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Desktop */
+        @media (min-width: 768px) {
+            .hero h1 { font-size: 52px; }
+            .container { max-width: 520px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero - Looks like legit casting call -->
+    <section class="hero">
+        <div class="badge">Paphos, Cyprus 🇨🇾</div>
+        <h1>Fitness Model<br><span>gesucht.</span></h1>
+        <p class="hero-sub">Yoga Session am Strand. Professionelles Shooting. Wir suchen dich.</p>
+        <div class="scroll-hint">
+            <span>Scroll</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- The Reveal -->
+    <section class="reveal">
+        <div class="container fade-in">
+            <div class="reveal-emoji">😏</div>
+            <h2>Ok, kurz ehrlich sein.</h2>
+            <p class="reveal-text">
+                Diese Ad hat funktioniert. Du bist hier.
+            </p>
+            <p class="reveal-text">
+                Das heißt du bist wahrscheinlich sportlich, feierst Yoga oder Strand oder beides — und siehst verdammt gut aus.
+            </p>
+            <p class="reveal-text">
+                Ich bin <em>Tom</em>. Online-Marketer aus Paphos.<br>
+                Und ja — ich suche tatsächlich ein Fitness Model.
+            </p>
+
+            <div class="highlight-box">
+                <p>Aber nicht für ein Shooting.<br><span>Sondern fürs Leben.</span><br>Oder erstmal nen Vino am Strand. 🍷</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Why -->
+    <section class="why">
+        <div class="container">
+            <h2 class="fade-in">Warum so?</h2>
+            <p class="why-sub fade-in">Gute Frage. Kurze Antwort:</p>
+
+            <div class="why-card fade-in">
+                <p>Ich baue Funnels und Ads für Unternehmen. Jeden Tag. Irgendwann dachte ich: <strong>Warum nicht auch für mich selbst?</strong></p>
+            </div>
+
+            <div class="why-card fade-in">
+                <p>Dating Apps? Nah. Lieber eine Ad die genau die richtige Person anzieht. <strong>So wie ich es für meine Kunden auch mache.</strong></p>
+            </div>
+
+            <div class="why-card fade-in">
+                <p>Worst case: Du findest es lustig und gehst weiter.<br><strong>Best case: Wir trinken was am Meer</strong> und du erzählst mir warum du auf die Ad geklickt hast. 🤷‍♂️</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- About -->
+    <section class="about">
+        <div class="container fade-in">
+            <h2>Das bin ich.</h2>
+            <div class="about-photo">👋</div>
+            <!-- Replace with real photo: <img src="tom.jpg" class="about-photo" alt="Tom"> -->
+
+            <div class="about-traits">
+                <span class="trait">🇨🇾 Paphos, Zypern</span>
+                <span class="trait">🚀 Founder</span>
+                <span class="trait">🏋️ Gym</span>
+                <span class="trait">🧘 Yoga</span>
+                <span class="trait">🍝 Gutes Essen</span>
+                <span class="trait">😄 Humor > Hustle</span>
+            </div>
+
+            <p class="about-bio">
+                Mehrere Unternehmen, Marketing + AI Background, lebt auf Zypern. Baut Sachen. Mag Menschen die auch Sachen bauen. Nimmt sich selbst nicht zu ernst — offensichtlich.
+            </p>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Looking for -->
+    <section class="looking-for">
+        <div class="container">
+            <h2 class="fade-in">Was ich suche.</h2>
+
+            <ul class="check-list fade-in">
+                <li><span class="check">✦</span> Sportlich. Eigener Drive. Macht ihr Ding.</li>
+                <li><span class="check">✦</span> Humor und Selbstironie. Pflicht.</li>
+                <li><span class="check">✦</span> Kein Drama. Kein Mainstream.</li>
+                <li><span class="check">✦</span> Kann über diese Landingpage lachen.</li>
+                <li><span class="check">✦</span> Traut sich, einem Fremden aus dem Internet zu schreiben.</li>
+            </ul>
+
+            <div class="bonus fade-in">
+                <span>Bonus:</span> Du feierst Zypern — oder willst es kennenlernen.
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container fade-in">
+            <p class="cta-intro">Wenn du bis hier gelesen hast, bist du entweder interessiert — oder sehr gelangweilt.</p>
+            <h2>Falls ersteres:</h2>
+            <p class="cta-sub">Ich antworte persönlich. Kein Bot. Kein Funnel mehr. Versprochen. 😄</p>
+
+            <a href="https://instagram.com/tom.lieb" class="btn btn-primary" target="_blank">
+                📸 Schreib mir auf Instagram
+            </a>
+            <a href="https://wa.me/4917631793586?text=Hey%20Tom%20%E2%80%94%20die%20Ad%20hat%20funktioniert%20%F0%9F%98%84" class="btn btn-secondary" target="_blank">
+                💬 Oder direkt per WhatsApp
+            </a>
+
+            <p class="cta-promise">Kein Spam. Kein Weiterverkauf. Einfach ein Gespräch. 🤙</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            Made with Selbstironie in Paphos 🇨🇾<br>
+            <a href="#">Impressum</a> · <a href="#">Datenschutz</a>
+        </p>
+    </footer>
+
+    <script>
+        // Intersection Observer for fade-in animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>

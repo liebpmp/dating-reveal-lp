@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hat funktioniert ☀️</title>
+    <meta name="description" content="Eine Ad für die richtige Frau. Kein Casting — was Besseres.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #FFFFFF;
+            color: #1A1A1A;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            text-align: center;
+            padding-top: 40px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: #F5F5F5;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 14px;
+            letter-spacing: -0.3px;
+        }
+
+        .hero .subtitle {
+            font-size: 15px;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 28px;
+            max-width: 420px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-photo {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            object-fit: cover;
+            max-height: 360px;
+        }
+
+        /* Placeholder photo */
+        .hero-photo-placeholder {
+            width: 100%;
+            height: 320px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        /* ===== CTA BUTTON ===== */
+        .cta-btn {
+            display: block;
+            width: 100%;
+            max-width: 460px;
+            margin: 0 auto 40px;
+            padding: 18px 24px;
+            background: #1A1A1A;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.1s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .cta-btn:hover { background: #333; }
+        .cta-btn:active { transform: scale(0.98); }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            padding: 0 24px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 24px;
+            letter-spacing: -0.2px;
+        }
+
+        /* ===== REVEAL BOX ===== */
+        .reveal-box {
+            background: #FAFAFA;
+            border: 1px solid #EEE;
+            border-radius: 12px;
+            padding: 28px 24px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .reveal-box p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #333;
+        }
+
+        .reveal-box p strong {
+            color: #1A1A1A;
+        }
+
+        .reveal-box .punchline {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1A1A1A;
+            margin-top: 12px;
+        }
+
+        /* ===== ABOUT ===== */
+        .about-photo {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            object-fit: cover;
+            max-height: 300px;
+        }
+
+        .about-photo-placeholder {
+            width: 100%;
+            height: 280px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+
+        .about-text {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        .about-text strong {
+            color: #1A1A1A;
+        }
+
+        /* ===== SOCIAL PROOF ===== */
+        .social-proof {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0 24px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .proof-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .proof-item {
+            font-size: 14px;
+            font-weight: 700;
+            color: #666;
+            padding: 8px 16px;
+            background: #F5F5F5;
+            border-radius: 8px;
+        }
+
+        /* ===== BENEFITS LIST ===== */
+        .benefits-list {
+            margin-bottom: 40px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .benefit-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .benefit-content h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .benefit-content p {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* ===== REQUIREMENTS LIST ===== */
+        .requirements-list {
+            margin-bottom: 16px;
+        }
+
+        .req-item {
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .req-item .emoji {
+            flex-shrink: 0;
+            font-size: 18px;
+            margin-top: 1px;
+        }
+
+        .req-item strong {
+            color: #1A1A1A;
+        }
+
+        .bonus-line {
+            font-size: 15px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ===== WHY CARDS ===== */
+        .why-card {
+            background: #FAFAFA;
+            border: 1px solid #EEE;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 12px;
+        }
+
+        .why-card p {
+            font-size: 15px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        .why-card p strong {
+            color: #1A1A1A;
+        }
+
+        .why-cards {
+            margin-bottom: 40px;
+        }
+
+        /* ===== FINAL CTA ===== */
+        .final-cta {
+            text-align: center;
+            padding: 20px 24px 40px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .final-cta h2 {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .final-cta .subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .final-cta .promise {
+            font-size: 13px;
+            color: #999;
+            margin-top: 12px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 12px;
+            color: #999;
+            border-top: 1px solid #EEE;
+        }
+
+        .footer a {
+            color: #999;
+            text-decoration: none;
+        }
+
+        /* ===== DIVIDER ===== */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: #EEE;
+            margin: 40px auto;
+            max-width: 500px;
+        }
+
+        /* ===== FORM OVERLAY ===== */
+        .form-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .form-overlay.active { display: block; }
+
+        .form-inner {
+            max-width: 480px;
+            margin: 0 auto;
+            padding-top: 20px;
+        }
+
+        .form-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1A1A1A;
+            cursor: pointer;
+            margin-bottom: 24px;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-back:hover { opacity: 0.7; }
+
+        .form-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .form-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 28px;
+        }
+
+        .form-progress {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 32px;
+        }
+
+        .form-progress-bar {
+            flex: 1;
+            height: 4px;
+            background: #EEE;
+            border-radius: 2px;
+        }
+
+        .form-progress-bar.active {
+            background: #1A1A1A;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 16px;
+            background: #F7F7F7;
+            border: 2px solid #EEE;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            color: #1A1A1A;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #1A1A1A;
+        }
+
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: #AAA;
+        }
+
+        .form-group textarea {
+            resize: none;
+            height: 120px;
+        }
+
+        .form-trust {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 16px;
+        }
+
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 60px 24px;
+        }
+
+        .success-screen.active { display: block; }
+        .success-screen .emoji { font-size: 56px; margin-bottom: 20px; }
+
+        .success-screen h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .success-screen p {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 28px;
+            max-width: 340px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .ig-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HERO ===== -->
+    <div class="container">
+        <div class="hero">
+            <div class="hero-badge">📍 Paphos, Zypern</div>
+            <h1>Diese Ad war für dich.<br>Und sie hat funktioniert. 😏</h1>
+            <p class="subtitle">Ich bin Tom — Online-Marketer, Jungunternehmer, lebt auf Zypern. Ich schalte normalerweise Ads für Unternehmen. Diesmal für mich selbst.</p>
+            <img class="hero-photo" src="tom-mountain.jpg" alt="Tom auf Zypern">
+        </div>
+    </div>
+
+    <div class="container">
+        <button class="cta-btn" onclick="openForm()">Jetzt in 2 Minuten kennenlernen</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ===== WARUM SO ===== -->
+    <div class="section">
+        <h3 class="section-title">Warum so? 🤷‍♂️</h3>
+        <div class="why-cards">
+            <div class="why-card">
+                <p>Die Ad hat gesagt "Fitness Model gesucht". Das stimmt auch — <strong>nur nicht für ein Yoga-Shooting.</strong></p>
+            </div>
+            <div class="why-card">
+                <p>Ich baue Funnels und Ads für Unternehmen. Jeden Tag. Irgendwann dachte ich: <strong>Warum nicht auch für mich selbst?</strong></p>
+            </div>
+            <div class="why-card">
+                <p>Dating Apps? Nah. Lieber eine Ad, die genau die richtige Person anzieht. <strong>So wie ich es für meine Kunden auch mache.</strong></p>
+            </div>
+            <div class="why-card">
+                <p>Worst case: Du findest es lustig und gehst weiter. <strong>Best case: Wir trinken was am Meer</strong> und du erzählst mir warum du auf die Ad geklickt hast. 🍷</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ===== ÜBER MICH ===== -->
+    <div class="section">
+        <h3 class="section-title">Über mich:</h3>
+        <img class="about-photo" src="https://framerusercontent.com/images/PNkJafMXwM0p2CLMrltBsGhS4Js.jpg?scale-down-to=1024" alt="Das Team">
+        <div class="about-text">
+            Ich bin <strong>Tom</strong> — Jungunternehmer, lebe auf Zypern und baue mit einem geilen Team mehrere Firmen auf. Marketing, AI und Skalierung — das ist mein Ding.<br><br>
+            Mein Alltag: Sonne, Meer, Gym, Strategie-Calls und abends grillen mit Freunden. Ich hab ein Haus in Paphos wo ständig spannende Leute vorbeikommen — Founder, Creator, Menschen die was aufbauen.<br><br>
+            Ich bin ruhig, aber wenn's spannend wird — dann richtig. Ich suche keine Perfektion, sondern jemanden mit Energie, Humor und echtem Charakter.<br><br>
+            <strong>Kein Ghosting. Kein Bullshit. Einfach ehrlich.</strong>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ===== SOCIAL PROOF ===== -->
+    <div class="social-proof">
+        <h3 class="section-title">Was Freunde über mich sagen:</h3>
+        <div class="proof-logos">
+            <div class="proof-item">"Loyalster Mensch" 💯</div>
+            <div class="proof-item">"Ruhig aber deep" 🧠</div>
+            <div class="proof-item">"Bester Koch (fast)" 👨‍🍳</div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ===== DAS ERWARTET DICH ===== -->
+    <div class="section">
+        <h3 class="section-title">Das erwartet dich:</h3>
+        <div class="benefits-list">
+            <div class="benefit-item">
+                <div class="benefit-icon">❤️</div>
+                <div class="benefit-content">
+                    <h4>Ehrlichkeit & Direktheit</h4>
+                    <p>Kein Spielchen, kein Ghosting. Was ich sage, meine ich auch.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">🚀</div>
+                <div class="benefit-content">
+                    <h4>Ambition & große Ziele</h4>
+                    <p>Mehrere Firmen, AI-Background, klare Vision. Ich weiß wo ich hinwill.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">🌍</div>
+                <div class="benefit-content">
+                    <h4>Lifestyle auf Zypern</h4>
+                    <p>Sonne, Meer, gutes Essen — umgeben von interessanten, motivierten Menschen.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">🧠</div>
+                <div class="benefit-content">
+                    <h4>Tiefe Gespräche & Humor</h4>
+                    <p>Echte Conversations statt Small Talk. Plus fragwürdige Kochkünste.</p>
+                </div>
+            </div>
+            <div class="benefit-item">
+                <div class="benefit-icon">🤝</div>
+                <div class="benefit-content">
+                    <h4>Geiles Umfeld & Community</h4>
+                    <p>Ein Haus voller Founder, Creator und spannender Persönlichkeiten in Paphos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <button class="cta-btn" onclick="openForm()">Jetzt in 2 Minuten kennenlernen</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ===== DAS BRINGST DU MIT ===== -->
+    <div class="section">
+        <h3 class="section-title">Das bringst du idealerweise mit:</h3>
+        <div class="requirements-list">
+            <div class="req-item">
+                <span class="emoji">👉</span>
+                <span><strong>Sportlich & aktiv</strong> — Gym, Yoga, irgendwas das dich bewegt</span>
+            </div>
+            <div class="req-item">
+                <span class="emoji">👉</span>
+                <span><strong>Humor & Selbstironie</strong> — du nimmst nicht alles bierernst und kannst über diese Landingpage lachen</span>
+            </div>
+            <div class="req-item">
+                <span class="emoji">👉</span>
+                <span><strong>Bock auf Abenteuer</strong> — neue Orte, neue Menschen, neue Erfahrungen</span>
+            </div>
+            <div class="req-item">
+                <span class="emoji">👉</span>
+                <span><strong>Ehrlichkeit</strong> — du sagst was du denkst und weißt was du willst</span>
+            </div>
+            <div class="req-item">
+                <span class="emoji">👉</span>
+                <span><strong>Substanz über Oberfläche</strong> — echte Gespräche statt nur gut aussehen</span>
+            </div>
+            <div class="req-item">
+                <span class="emoji">👉</span>
+                <span><strong>Anfang bis Mitte 20</strong> und offen für was Neues</span>
+            </div>
+        </div>
+        <div class="bonus-line">⭐ <strong>Bonuspunkte wenn du diese Ad witzig findest</strong> 😏</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ===== FINAL CTA ===== -->
+    <div class="final-cta">
+        <h2>Wenn du bis hier gelesen hast — Respekt. 😄</h2>
+        <p class="subtitle">Die meisten hätten nach dem Reveal aufgehört. Du nicht. Das sagt was über dich.</p>
+        <button class="cta-btn" onclick="openForm()">Kennenlernen starten 🍷</button>
+        <p class="promise">Ich antworte persönlich. Kein Bot. Kein Funnel mehr. Versprochen. 🤙</p>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="footer">
+        Made with Selbstironie in Paphos 🇨🇾<br>
+        <a href="#">Impressum</a> · <a href="#">Datenschutz</a>
+    </div>
+
+    <!-- ===== FORM OVERLAY ===== -->
+    <div class="form-overlay" id="formOverlay">
+        <div class="form-inner">
+            <button class="form-back" onclick="formBack()">← Zurück</button>
+
+            <div class="form-progress">
+                <div class="form-progress-bar active" id="prog1"></div>
+                <div class="form-progress-bar" id="prog2"></div>
+                <div class="form-progress-bar" id="prog3"></div>
+                <div class="form-progress-bar" id="prog4"></div>
+            </div>
+
+            <!-- Step 1 -->
+            <div class="form-step active" id="step1">
+                <div class="form-group">
+                    <label>Wie heißt du? 😊</label>
+                    <input type="text" id="f-name" placeholder="Dein Vorname" autofocus>
+                </div>
+                <button class="cta-btn" onclick="nextStep(2)">Weiter →</button>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="form-step" id="step2">
+                <div class="form-group">
+                    <label>Wie alt bist du?</label>
+                    <input type="number" id="f-age" placeholder="z.B. 24" min="18" max="40">
+                </div>
+                <div class="form-group">
+                    <label>Wo lebst du gerade? 📍</label>
+                    <input type="text" id="f-location" placeholder="z.B. Berlin, München, Paphos...">
+                </div>
+                <button class="cta-btn" onclick="nextStep(3)">Weiter →</button>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="form-step" id="step3">
+                <div class="form-group">
+                    <label>Dein Instagram</label>
+                    <input type="text" id="f-ig" placeholder="@deinname">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp oder Telefon</label>
+                    <input type="tel" id="f-phone" placeholder="+49 ...">
+                </div>
+                <button class="cta-btn" onclick="nextStep(4)">Weiter →</button>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="form-step" id="step4">
+                <div class="form-group">
+                    <label>Was sollte ich über dich wissen? 💬</label>
+                    <textarea id="f-about" placeholder="Erzähl mir kurz was über dich — was macht dich aus, worauf hast du Bock?"></textarea>
+                </div>
+                <button class="cta-btn" onclick="submitForm()">Absenden & auf Vino warten 🍷</button>
+                <div class="form-trust">🔒 Deine Daten bleiben privat · Kein Spam · Nur ich sehe das</div>
+            </div>
+
+            <!-- Success -->
+            <div class="success-screen" id="successScreen">
+                <div class="emoji">🎉</div>
+                <h2>Du bist drin!</h2>
+                <p>Danke! Ich schau mir dein Profil an und melde mich persönlich. Bis bald — vielleicht bei einem Vino am Strand? 🌅</p>
+                <a href="https://instagram.com/tom.lieb" target="_blank" class="ig-btn">📸 Auf Instagram folgen</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+
+        function openForm() {
+            document.getElementById('formOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            currentStep = 1;
+            updateFormUI();
+        }
+
+        function closeForm() {
+            document.getElementById('formOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function formBack() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateFormUI();
+            } else {
+                closeForm();
+            }
+        }
+
+        function nextStep(step) {
+            currentStep = step;
+            updateFormUI();
+        }
+
+        function updateFormUI() {
+            document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + currentStep).classList.add('active');
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('prog' + i).classList.toggle('active', i <= currentStep);
+            }
+            document.getElementById('formOverlay').scrollTop = 0;
+        }
+
+        function submitForm() {
+            const data = {
+                name: document.getElementById('f-name').value,
+                age: document.getElementById('f-age').value,
+                location: document.getElementById('f-location').value,
+                instagram: document.getElementById('f-ig').value,
+                phone: document.getElementById('f-phone').value,
+                about: document.getElementById('f-about').value
+            };
+            console.log('Submitted:', data);
+            document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+            document.querySelector('.form-back').style.display = 'none';
+            document.querySelector('.form-progress').style.display = 'none';
+            document.getElementById('successScreen').classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
