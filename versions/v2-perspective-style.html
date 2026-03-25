@@ -12,6 +12,23 @@
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-W6G3GHGX');</script>
     <!-- End Google Tag Manager -->
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1321179383220173');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1321179383220173&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -675,7 +692,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <script>
         // === Facebook Conversion API ===
-        const FB_PIXEL_ID = 'PIXEL_ID_HIER'; // TODO: Pixel ID eintragen!
+        const FB_PIXEL_ID = '1321179383220173';
         const FB_TOKEN = 'EAAVEZCLBtNm0BRHte0bQwNichwuiypdQZC7JsMiY4SqFjq8iY7R37n6GcBuG0sufG2pRcRMJwNFTjpGZAkOSYrIOisfMZCsG6ZBkMIpnmCx7cwUqh6qYu8CdRVMMP7BSFecyRVSoYPuH6DG7lOmmLj71OOiWO26vDrFoCtw8gB8CcHzNBF8BkzNsdp4SG1gZDZD';
 
         async function sha256(str) {
@@ -689,8 +706,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             return m ? m[2] : null;
         }
 
-        async function sendFBCAPI(formData) {
-            const eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        async function sendFBCAPI(formData, eventId) {
             const eventTime = Math.floor(Date.now() / 1000);
 
             const userData = {
@@ -752,8 +768,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 body: JSON.stringify(data)
             }).catch(err => console.log('Webhook error:', err));
 
-            // Facebook Conversion API (Lead Event)
-            sendFBCAPI(data);
+            // Meta Pixel Lead Event (Browser-seitig, für Dedup mit CAPI)
+            const eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            fbq('track', 'Lead', {}, { eventID: eventId });
+
+            // Facebook Conversion API (Server-seitig, gleiche event_id für Dedup)
+            sendFBCAPI(data, eventId);
 
             document.getElementById('contactForm').style.display = 'none';
             document.getElementById('successScreen').classList.add('active');
