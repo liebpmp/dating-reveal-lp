@@ -674,6 +674,66 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <script>
+        // === Facebook Conversion API ===
+        const FB_PIXEL_ID = 'PIXEL_ID_HIER'; // TODO: Pixel ID eintragen!
+        const FB_TOKEN = 'EAAVEZCLBtNm0BRHte0bQwNichwuiypdQZC7JsMiY4SqFjq8iY7R37n6GcBuG0sufG2pRcRMJwNFTjpGZAkOSYrIOisfMZCsG6ZBkMIpnmCx7cwUqh6qYu8CdRVMMP7BSFecyRVSoYPuH6DG7lOmmLj71OOiWO26vDrFoCtw8gB8CcHzNBF8BkzNsdp4SG1gZDZD';
+
+        async function sha256(str) {
+            const buf = new TextEncoder().encode(str.trim().toLowerCase());
+            const hash = await crypto.subtle.digest('SHA-256', buf);
+            return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function getCookie(name) {
+            const m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            return m ? m[2] : null;
+        }
+
+        async function sendFBCAPI(formData) {
+            const eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const eventTime = Math.floor(Date.now() / 1000);
+
+            const userData = {
+                client_user_agent: navigator.userAgent
+            };
+
+            // fbp + fbc Cookies (Meta Pixel setzt diese)
+            const fbp = getCookie('_fbp');
+            const fbc = getCookie('_fbc');
+            if (fbp) userData.fbp = fbp;
+            if (fbc) userData.fbc = fbc;
+
+            // Vorname SHA-256 gehasht
+            if (formData.name) userData.fn = [await sha256(formData.name)];
+
+            // Telefonnummer SHA-256 gehasht (wenn Nummer statt IG-Handle)
+            if (formData.contact && formData.contact.match(/^\+?\d/)) {
+                userData.ph = [await sha256(formData.contact.replace(/[\s\-]/g, ''))];
+            }
+
+            const payload = {
+                data: [{
+                    event_name: 'Lead',
+                    event_time: eventTime,
+                    event_id: eventId,
+                    action_source: 'website',
+                    event_source_url: window.location.href,
+                    user_data: userData
+                }]
+            };
+
+            try {
+                const res = await fetch(
+                    'https://graph.facebook.com/v21.0/' + FB_PIXEL_ID + '/events?access_token=' + FB_TOKEN,
+                    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+                );
+                console.log('FB CAPI:', await res.json());
+            } catch (err) {
+                console.log('FB CAPI error:', err);
+            }
+        }
+
+        // === Form Submit ===
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const data = {
@@ -681,16 +741,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 contact: document.getElementById('f-contact').value,
                 about: document.getElementById('f-about').value
             };
-            console.log('Submitted:', data);
+
             // GTM dataLayer
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({ event: 'form_submit', form_name: 'dating_lead', ...data });
 
-            // Zapier Webhook
+            // Zapier Webhook (alle Felder)
             fetch('https://hooks.zapier.com/hooks/catch/10412562/unbzmq4/', {
                 method: 'POST',
                 body: JSON.stringify(data)
             }).catch(err => console.log('Webhook error:', err));
+
+            // Facebook Conversion API (Lead Event)
+            sendFBCAPI(data);
 
             document.getElementById('contactForm').style.display = 'none';
             document.getElementById('successScreen').classList.add('active');
