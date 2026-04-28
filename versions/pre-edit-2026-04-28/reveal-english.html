@@ -669,13 +669,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <input type="text" id="f-name" placeholder="What's your name?" required>
             </div>
             <div class="form-group">
-                <label>Your phone number (with country code) *</label>
-                <input type="tel" id="f-phone" placeholder="+357 99 123456" required>
-                <span style="color:#999; font-size:12px; margin-top:4px; display:block;">WhatsApp preferred — e.g. +357, +49, +44...</span>
-            </div>
-            <div class="form-group">
-                <label>Your Instagram <span style="color:#999; font-weight:400;">(optional)</span></label>
-                <input type="text" id="f-ig" placeholder="@yourname">
+                <label>Your Instagram or number</label>
+                <input type="text" id="f-contact" placeholder="@yourname or +357..." required>
             </div>
             <div class="form-group">
                 <label>What should I know about you? <span style="color:#999; font-weight:400;">(optional)</span></label>
@@ -731,8 +726,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
             if (formData.name) userData.fn = [await sha256(formData.name)];
 
-            if (formData.phone) {
-                userData.ph = [await sha256(formData.phone.replace(/[\s\-]/g, ''))];
+            if (formData.contact && formData.contact.match(/^\+?\d/)) {
+                userData.ph = [await sha256(formData.contact.replace(/[\s\-]/g, ''))];
             }
 
             const payload = {
@@ -760,15 +755,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         // === Form Submit ===
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const phone = document.getElementById('f-phone').value.trim();
-            if (!phone || !phone.match(/^\+\d{6,}/)) {
-                alert('Please enter your phone number with country code (e.g. +357 99 123456)');
-                return;
-            }
             const data = {
                 name: document.getElementById('f-name').value,
-                phone: phone,
-                instagram: document.getElementById('f-ig').value,
+                contact: document.getElementById('f-contact').value,
                 about: document.getElementById('f-about').value
             };
 

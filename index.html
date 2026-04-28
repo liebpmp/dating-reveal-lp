@@ -670,8 +670,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <input type="text" id="f-name" placeholder="Wie heißt du?" required>
             </div>
             <div class="form-group">
-                <label>Dein Instagram oder Nummer</label>
-                <input type="text" id="f-contact" placeholder="@deinname oder +49..." required>
+                <label>Deine Telefonnummer (mit Ländervorwahl) *</label>
+                <input type="tel" id="f-phone" placeholder="+49 170 1234567" required>
+                <span style="color:#999; font-size:12px; margin-top:4px; display:block;">WhatsApp bevorzugt — z.B. +49, +357, +43...</span>
+            </div>
+            <div class="form-group">
+                <label>Dein Instagram <span style="color:#999; font-weight:400;">(optional)</span></label>
+                <input type="text" id="f-ig" placeholder="@deinname">
             </div>
             <div class="form-group">
                 <label>Was sollte ich über dich wissen? <span style="color:#999; font-weight:400;">(optional)</span></label>
@@ -729,9 +734,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             // Vorname SHA-256 gehasht
             if (formData.name) userData.fn = [await sha256(formData.name)];
 
-            // Telefonnummer SHA-256 gehasht (wenn Nummer statt IG-Handle)
-            if (formData.contact && formData.contact.match(/^\+?\d/)) {
-                userData.ph = [await sha256(formData.contact.replace(/[\s\-]/g, ''))];
+            // Telefonnummer SHA-256 gehasht
+            if (formData.phone) {
+                userData.ph = [await sha256(formData.phone.replace(/[\s\-]/g, ''))];
             }
 
             const payload = {
@@ -759,9 +764,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         // === Form Submit ===
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            const phone = document.getElementById('f-phone').value.trim();
+            if (!phone || !phone.match(/^\+\d{6,}/)) {
+                alert('Bitte gib deine Telefonnummer mit Ländervorwahl an (z.B. +49 170 1234567)');
+                return;
+            }
             const data = {
                 name: document.getElementById('f-name').value,
-                contact: document.getElementById('f-contact').value,
+                phone: phone,
+                instagram: document.getElementById('f-ig').value,
                 about: document.getElementById('f-about').value
             };
 
