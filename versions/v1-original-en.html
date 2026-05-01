@@ -483,27 +483,6 @@
             text-decoration: none;
             font-family: 'Inter', sans-serif;
         }
-
-        .wa-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 18px 36px;
-            background: #25D366;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            text-decoration: none;
-            font-family: 'Inter', sans-serif;
-            transition: background 0.2s, transform 0.15s;
-            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
-        }
-
-        .wa-btn:hover { background: #1fb855; transform: translateY(-1px); }
-        .wa-btn:active { transform: scale(0.97); }
     </style>
 </head>
 <body>
@@ -705,17 +684,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <label>Your Instagram <span style="color:#999; font-weight:400;">(optional)</span></label>
                 <input type="text" id="f-ig" placeholder="@yourname">
             </div>
-
+            <div class="form-group">
+                <label>What should I know about you? <span style="color:#999; font-weight:400;">(optional)</span></label>
+                <textarea id="f-about" placeholder="Tell me a bit about yourself — what makes you you, what are you into?"></textarea>
+            </div>
             <button type="submit" class="cta-btn">Submit & wait for that wine 🍷</button>
             <div class="form-trust">🔒 Your data stays private · No spam · Only I see this</div>
         </form>
 
         <div class="success-screen" id="successScreen">
-            <div class="emoji">🍷</div>
-            <h2>Bold move — I like it.</h2>
-            <p>Now let's skip the waiting game. Hit the button, say hey, and let's see if the vibe is real.</p>
-            <a href="https://wa.me/4917631793586?text=Hey%21%20I%20just%20found%20your%20page%20%E2%98%80%EF%B8%8F" target="_blank" class="wa-btn">💬 Message me on WhatsApp</a>
-            <p style="margin-top:16px; font-size:13px; color:#999;">Or follow me first — <a href="https://www.instagram.com/tomliebofficial" target="_blank" style="color:#666; text-decoration:underline;">@tomliebofficial</a></p>
+            <div class="emoji">🎉</div>
+            <h2>You're in!</h2>
+            <p>Thanks! I'll check out your profile and get back to you personally. See you soon — maybe over wine by the sea? 🌅</p>
+            <a href="https://www.instagram.com/tomliebofficial" target="_blank" class="ig-btn">📸 Follow on Instagram</a>
         </div>
     </div>
 
@@ -795,7 +776,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 name: document.getElementById('f-name').value,
                 phone: phone,
                 instagram: document.getElementById('f-ig').value,
-                about: 'https://wa.me/4917631793586'
+                about: document.getElementById('f-about').value
             };
 
             window.dataLayer = window.dataLayer || [];

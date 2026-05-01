@@ -484,6 +484,27 @@
             text-decoration: none;
             font-family: 'Inter', sans-serif;
         }
+
+        .wa-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 36px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s, transform 0.15s;
+            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+        }
+
+        .wa-btn:hover { background: #1fb855; transform: translateY(-1px); }
+        .wa-btn:active { transform: scale(0.97); }
     </style>
 </head>
 <body>
@@ -685,19 +706,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <label>Dein Instagram <span style="color:#999; font-weight:400;">(optional)</span></label>
                 <input type="text" id="f-ig" placeholder="@deinname">
             </div>
-            <div class="form-group">
-                <label>Was sollte ich über dich wissen? <span style="color:#999; font-weight:400;">(optional)</span></label>
-                <textarea id="f-about" placeholder="Erzähl mir kurz was über dich — was macht dich aus, worauf hast du Bock?"></textarea>
-            </div>
+
             <button type="submit" class="cta-btn">Absenden & auf Vino warten 🍷</button>
             <div class="form-trust">🔒 Deine Daten bleiben privat · Kein Spam · Nur ich sehe das</div>
         </form>
 
         <div class="success-screen" id="successScreen">
-            <div class="emoji">🎉</div>
-            <h2>Du bist drin!</h2>
-            <p>Danke! Ich schau mir dein Profil an und melde mich persönlich. Bis bald — vielleicht bei einem Vino am Strand? 🌅</p>
-            <a href="https://www.instagram.com/tomliebofficial" target="_blank" class="ig-btn">📸 Auf Instagram folgen</a>
+            <div class="emoji">🍷</div>
+            <h2>Mutig — gefällt mir.</h2>
+            <p>Jetzt kein Warten mehr. Klick den Button, schreib mir hey, und wir schauen ob der Vibe stimmt.</p>
+            <a href="https://wa.me/4917631793586?text=Hey%21%20Hab%20grad%20deine%20Seite%20gefunden%20%E2%98%80%EF%B8%8F" target="_blank" class="wa-btn">💬 Schreib mir auf WhatsApp</a>
+            <p style="margin-top:16px; font-size:13px; color:#999;">Oder erst mal folgen — <a href="https://www.instagram.com/tomliebofficial" target="_blank" style="color:#666; text-decoration:underline;">@tomliebofficial</a></p>
         </div>
     </div>
 
@@ -780,7 +799,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 name: document.getElementById('f-name').value,
                 phone: phone,
                 instagram: document.getElementById('f-ig').value,
-                about: document.getElementById('f-about').value
+                about: 'https://wa.me/4917631793586'
             };
 
             // GTM dataLayer
