@@ -830,17 +830,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             window.dataLayer.push({ event: 'form_submit', form_name: 'dating_lead_en', ...data });
 
             // === Supabase Direct Insert (CRM) ===
-            _supabase.from('leads').insert({
+            // Capture tracking data for Meta CAPI event matching
+            const fbp = getCookie('_fbp');
+            const fbc = getCookie('_fbc') || new URLSearchParams(window.location.search).get('fbclid');
+            const leadInsert = {
                 name: data.name,
                 phone: data.phone,
                 instagram: data.instagram,
                 about: data.about,
                 source_url: window.location.href,
-                language: 'en'
-            }).then(res => {
-                if (res.error) console.log('Supabase error:', res.error);
-                else console.log('Supabase lead inserted:', res.data);
-            }).catch(err => console.log('Supabase error:', err));
+                language: 'en',
+                user_agent: navigator.userAgent,
+                fbp: fbp || null,
+                fbc: fbc ? (fbc.startsWith('fb.') ? fbc : 'fb.1.' + Date.now() + '.' + fbc) : null,
+            };
+            // Fetch client IP for better Meta matching
+            fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => {
+                leadInsert.client_ip = d.ip;
+                _supabase.from('leads').insert(leadInsert).then(res => {
+                    if (res.error) console.log('Supabase error:', res.error);
+                    else console.log('Supabase lead inserted:', res.data);
+                });
+            }).catch(() => {
+                // Insert without IP if ipify fails
+                _supabase.from('leads').insert(leadInsert).then(res => {
+                    if (res.error) console.log('Supabase error:', res.error);
+                    else console.log('Supabase lead inserted:', res.data);
+                });
+            });
 
             // Zapier Webhook (bleibt parallel als Backup)
             fetch('https://hooks.zapier.com/hooks/catch/10412562/unbzmq4/', {
