@@ -835,7 +835,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 phone: data.phone,
                 instagram: data.instagram,
                 about: data.about,
-                source_url: window.location.href
+                source_url: window.location.href,
+                language: 'en'
             }).then(res => {
                 if (res.error) console.log('Supabase error:', res.error);
                 else console.log('Supabase lead inserted:', res.data);
