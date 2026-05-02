@@ -12,6 +12,14 @@
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-W6G3GHGX');</script>
     <!-- End Google Tag Manager -->
+    <!-- Supabase JS (for direct CRM insert) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        const _supabase = window.supabase.createClient(
+            'https://tofpsjlfedoiadukjmhs.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZnBzamxmZWRvaWFkdWtqbWhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MDQyNDUsImV4cCI6MjA5MzI4MDI0NX0.v0RcTRMY5zcO7jo498hjUl_qeijWKb22UjSGDCznBqQ'
+        );
+    </script>
     <!-- Meta Pixel Code -->
     <script>
     !function(f,b,e,v,n,t,s)
@@ -806,7 +814,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({ event: 'form_submit', form_name: 'dating_lead', ...data });
 
-            // Zapier Webhook (alle Felder)
+            // === Supabase Direct Insert (CRM) ===
+            _supabase.from('leads').insert({
+                name: data.name,
+                phone: data.phone,
+                instagram: data.instagram,
+                about: data.about,
+                source_url: window.location.href
+            }).then(res => {
+                if (res.error) console.log('Supabase error:', res.error);
+                else console.log('Supabase lead inserted:', res.data);
+            }).catch(err => console.log('Supabase error:', err));
+
+            // Zapier Webhook (bleibt parallel als Backup)
             fetch('https://hooks.zapier.com/hooks/catch/10412562/unbzmq4/', {
                 method: 'POST',
                 body: JSON.stringify({ ...data, source_url: window.location.href })
