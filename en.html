@@ -721,13 +721,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="success-screen" id="successScreen">
             <div class="emoji">✅</div>
             <h2>Step 1 of 2 done.<br>Now, send me a short voice message 🎙️</h2>
-            <p style="font-size:15px; color:#666; margin-bottom:16px;">Welcome to step 2 of this funnel 😄</p>
+            <p style="font-size:15px; color:#666; margin-bottom:16px;">Bold move so far - I like it. Now contact me so we can start chatting</p>
             
             <div style="background:#F5F5F5; border:1px solid #E0E0E0; border-radius:14px; padding:20px; margin-bottom:20px; text-align:left;">
-                <p style="font-size:14px; color:#444; margin-bottom:14px; line-height:1.5;">
-                    <span style="color:#777; font-size:13px; display:inline-block;">Once you do, I'll reach out to you personally — promise.</span>
-                </p>
-                <div style="font-size:15px; color:#333; line-height:1.6; margin-top:14px;">
+                <div style="font-size:15px; color:#333; line-height:1.6;">
                     <div style="margin-bottom:12px; padding-left:2px;">1️⃣ &nbsp;Who are you & what do you do?</div>
                     <div style="margin-bottom:12px; padding-left:2px;">2️⃣ &nbsp;What's the last thing that made you genuinely laugh?</div>
                     <div style="margin-bottom:12px; padding-left:2px;">3️⃣ &nbsp;What kinds of things excite you?</div>
@@ -857,6 +854,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
             document.getElementById('contactForm').style.display = 'none';
             document.getElementById('successScreen').classList.add('active');
+            // Scroll so the success message + CTA buttons are centered in viewport
+            setTimeout(function() {
+                document.getElementById('successScreen').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         });
     </script>
 
