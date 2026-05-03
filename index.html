@@ -796,30 +796,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
 
         // === Form Submit ===
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const phone = document.getElementById('f-phone').value.trim();
-            if (!phone || !phone.match(/^\+\d{6,}/)) {
-                alert('Bitte gib deine Telefonnummer mit Ländervorwahl an (z.B. +49 170 1234567)');
-                return;
-            }
-            const data = {
-                name: document.getElementById('f-name').value,
-                phone: phone,
-                instagram: document.getElementById('f-ig').value,
-                about: 'https://wa.me/4917631793586'
-            };
+        // === Date Confirmation Popup ===
+        let _pendingData = null;
+        let _fallbackTimer = null;
+        let _alreadySent = false;
 
-            // GTM dataLayer
+        function sendLead(data, confirmed) {
+            if (_alreadySent) return;
+            _alreadySent = true;
+            if (_fallbackTimer) clearTimeout(_fallbackTimer);
+
             window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({ event: 'form_submit', form_name: 'dating_lead', ...data });
+            window.dataLayer.push({ event: 'form_submit', form_name: 'dating_lead', ...data, confirmed: confirmed });
 
             // === Supabase Direct Insert (CRM) ===
             _supabase.from('leads').insert({
                 name: data.name,
                 phone: data.phone,
                 instagram: data.instagram,
-                about: data.about,
+                about: confirmed ? data.about : '[hesitant] ' + data.about,
                 source_url: window.location.href,
                 language: 'de'
             }).then(res => {
@@ -827,23 +822,64 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 else console.log('Supabase lead inserted:', res.data);
             }).catch(err => console.log('Supabase error:', err));
 
-            // Zapier Webhook (bleibt parallel als Backup)
+            // Zapier Webhook
             fetch('https://hooks.zapier.com/hooks/catch/10412562/unbzmq4/', {
                 method: 'POST',
-                body: JSON.stringify({ ...data, source_url: window.location.href })
+                body: JSON.stringify({ ...data, source_url: window.location.href, confirmed: confirmed })
             }).catch(err => console.log('Webhook error:', err));
 
-            // Meta Pixel Lead Event (Browser-seitig, für Dedup mit CAPI)
-            const eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            fbq('track', 'Lead', {}, { eventID: eventId });
+            // Meta Pixel + CAPI only for confirmed leads
+            if (confirmed) {
+                const eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                fbq('track', 'Lead', {}, { eventID: eventId });
+                sendFBCAPI(data, eventId);
+            }
 
-            // Facebook Conversion API (Server-seitig, gleiche event_id für Dedup)
-            sendFBCAPI(data, eventId);
+            if (confirmed) {
+                document.getElementById('dateConfirmPopup').style.display = 'none';
+                document.getElementById('contactForm').style.display = 'none';
+                document.getElementById('successScreen').classList.add('active');
+            }
+        }
 
-            document.getElementById('contactForm').style.display = 'none';
-            document.getElementById('successScreen').classList.add('active');
+        function closePopup() {
+            document.getElementById('dateConfirmPopup').style.display = 'none';
+            if (!_alreadySent && _pendingData) {
+                _fallbackTimer = setTimeout(function() {
+                    sendLead(_pendingData, false);
+                }, 60000);
+            }
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const phone = document.getElementById('f-phone').value.trim();
+            if (!phone || !phone.match(/^\+\d{6,}/)) {
+                alert('Bitte gib deine Telefonnummer mit Ländervorwahl an (z.B. +49 170 1234567)');
+                return;
+            }
+            _pendingData = {
+                name: document.getElementById('f-name').value,
+                phone: phone,
+                instagram: document.getElementById('f-ig').value,
+                about: 'https://wa.me/4917631793586'
+            };
+            _alreadySent = false;
+            if (_fallbackTimer) clearTimeout(_fallbackTimer);
+
+            document.getElementById('dateConfirmPopup').style.display = 'flex';
         });
     </script>
 
+    <!-- Date Confirmation Popup -->
+    <div id="dateConfirmPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
+        <div style="background:#1a1a2e; border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:32px 28px; max-width:380px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+            <div style="font-size:32px; margin-bottom:12px;">🍷</div>
+            <h3 style="color:#fff; font-size:20px; margin:0 0 8px; font-weight:600;">Eine letzte Frage</h3>
+            <p style="color:rgba(255,255,255,0.7); font-size:15px; line-height:1.5; margin:0 0 24px;">Du bewirbst dich auf ein Date, nicht auf ein Fotoshooting.<br>Alles klar?</p>
+            <button onclick="sendLead(_pendingData, true)" style="display:block; width:100%; padding:14px; background:linear-gradient(135deg,#e8b4b8,#d4a0a6); color:#1a1a2e; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer; margin-bottom:10px; transition:transform 0.2s;">Natürlich 😄</button>
+            <button onclick="closePopup()" style="display:block; width:100%; padding:12px; background:transparent; color:rgba(255,255,255,0.5); border:1px solid rgba(255,255,255,0.15); border-radius:10px; font-size:14px; cursor:pointer; transition:color 0.2s;">Moment, was?</button>
+        </div>
+    </div>
 </body>
 </html>
