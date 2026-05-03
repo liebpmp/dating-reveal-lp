@@ -812,91 +812,122 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
 
         // === Form Submit ===
-        // === Date Confirmation Popup ===
+        // === Date Confirmation Popup (v3.3) ===
+        const _SB_URL = 'https://tofpsjlfedoiadukjmhs.supabase.co';
+        const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvZnBzamxmZWRvaWFkdWtqbWhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MDQyNDUsImV4cCI6MjA5MzI4MDI0NX0.v0RcTRMY5zcO7jo498hjUl_qeijWKb22UjSGDCznBqQ';
+        const _ZAPIER_URL = 'https://hooks.zapier.com/hooks/catch/10412562/unbzmq4/';
         let _pendingData = null;
         let _fallbackTimer = null;
-        let _alreadySent = false;
+        let _resolved = false; // true once any button clicked or fallback fired
 
-        function sendLead(data, confirmed) {
-            if (_alreadySent) return;
-            _alreadySent = true;
-            if (_fallbackTimer) clearTimeout(_fallbackTimer);
-
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({ event: 'form_submit', form_name: 'dating_lead_en', ...data, confirmed: confirmed });
-
-            // === Supabase Direct Insert (CRM) ===
+        function _buildLeadInsert(data, extra) {
             const fbp = getCookie('_fbp');
             const fbc = getCookie('_fbc') || new URLSearchParams(window.location.search).get('fbclid');
-            const leadInsert = {
-                name: data.name,
-                phone: data.phone,
-                instagram: data.instagram,
-                about: confirmed ? data.about : '[hesitant] ' + data.about,
-                source_url: window.location.href,
-                language: 'en',
+            return {
+                name: data.name, phone: data.phone, instagram: data.instagram,
+                about: extra.about || data.about,
+                source_url: window.location.href, language: 'en',
                 user_agent: navigator.userAgent,
                 fbp: fbp || null,
                 fbc: fbc ? (fbc.startsWith('fb.') ? fbc : 'fb.1.' + Date.now() + '.' + fbc) : null,
+                ...(extra.phase ? { phase: extra.phase } : {}),
+                ...(extra.disqualify_reason ? { disqualify_reason: extra.disqualify_reason } : {}),
             };
-            fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => {
-                leadInsert.client_ip = d.ip;
-                _supabase.from('leads').insert(leadInsert).then(res => {
-                    if (res.error) console.log('Supabase error:', res.error);
-                    else console.log('Supabase lead inserted:', res.data);
-                });
-            }).catch(() => {
-                _supabase.from('leads').insert(leadInsert).then(res => {
-                    if (res.error) console.log('Supabase error:', res.error);
-                    else console.log('Supabase lead inserted:', res.data);
-                });
-            });
-
-            // Zapier Webhook
-            fetch('https://hooks.zapier.com/hooks/catch/10412562/unbzmq4/', {
-                method: 'POST',
-                body: JSON.stringify({ ...data, lang: 'en', source_url: window.location.href, confirmed: confirmed })
-            }).catch(err => console.log('Webhook error:', err));
-
-            // Meta Pixel + CAPI only for confirmed leads
-            if (confirmed) {
-                const eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                fbq('track', 'Lead', {}, { eventID: eventId });
-                sendFBCAPI(data, eventId);
-            }
-
-            if (confirmed) {
-                document.getElementById('dateConfirmPopup').style.display = 'none';
-                document.getElementById('contactForm').style.display = 'none';
-                document.getElementById('successScreen').classList.add('active');
-                setTimeout(function() {
-                    document.getElementById('successScreen').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
-            }
         }
 
-        function closePopup() {
+        function _supabaseInsert(leadInsert, keepalive) {
+            const opts = {
+                method: 'POST',
+                headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+                body: JSON.stringify(leadInsert),
+            };
+            if (keepalive) opts.keepalive = true;
+            return fetch(_SB_URL + '/rest/v1/leads', opts).catch(e => console.log('SB error:', e));
+        }
+
+        function _zapierSend(data, extra, keepalive) {
+            const opts = { method: 'POST', body: JSON.stringify({ ...data, lang: 'en', source_url: window.location.href, ...extra }) };
+            if (keepalive) opts.keepalive = true;
+            return fetch(_ZAPIER_URL, opts).catch(e => console.log('Zapier error:', e));
+        }
+
+        // === "Obviously 😄" — full send ===
+        function confirmDate() {
+            if (_resolved) return;
+            _resolved = true;
+            if (_fallbackTimer) clearTimeout(_fallbackTimer);
+            window.removeEventListener('beforeunload', _onBeforeUnload);
+            const data = _pendingData;
+
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: 'form_submit', form_name: 'dating_lead_en', ...data, confirmed: true });
+
+            // Supabase (with IP)
+            const insert = _buildLeadInsert(data, { about: data.about });
+            fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => {
+                insert.client_ip = d.ip;
+                _supabaseInsert(insert, false);
+            }).catch(() => _supabaseInsert(insert, false));
+
+            // Zapier
+            _zapierSend(data, { confirmed: true }, false);
+
+            // Meta Pixel + CAPI
+            const eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            fbq('track', 'Lead', {}, { eventID: eventId });
+            sendFBCAPI(data, eventId);
+
+            // Show success
             document.getElementById('dateConfirmPopup').style.display = 'none';
-            // Show "misunderstood" message, hide form
+            document.getElementById('contactForm').style.display = 'none';
+            document.getElementById('successScreen').classList.add('active');
+            setTimeout(() => document.getElementById('successScreen').scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+        }
+
+        // === "Wait, what?" — CRM only, disqualified ===
+        function rejectDate() {
+            if (_resolved) return;
+            _resolved = true;
+            if (_fallbackTimer) clearTimeout(_fallbackTimer);
+            window.removeEventListener('beforeunload', _onBeforeUnload);
+            const data = _pendingData;
+
+            // Supabase only — disqualified, no Zapier, no Meta
+            const insert = _buildLeadInsert(data, {
+                about: data.about,
+                phase: 'disqualified',
+                disqualify_reason: 'Hat was anderes erwartet (clicked "Wait, what?")'
+            });
+            _supabaseInsert(insert, false);
+
+            // Show misunderstood screen
+            document.getElementById('dateConfirmPopup').style.display = 'none';
             document.getElementById('contactForm').style.display = 'none';
             document.getElementById('misunderstoodScreen').style.display = 'block';
             document.getElementById('misunderstoodScreen').scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // Start 60s fallback timer — send as hesitant if they don't re-submit
-            if (!_alreadySent && _pendingData) {
-                _fallbackTimer = setTimeout(function() {
-                    sendLead(_pendingData, false);
-                }, 60000);
-            }
         }
 
+        // === "I actually want to apply" — reset everything ===
         function tryAgain() {
             document.getElementById('misunderstoodScreen').style.display = 'none';
             document.getElementById('contactForm').style.display = 'block';
             document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // Reset state so re-submit works
-            _alreadySent = false;
-            if (_fallbackTimer) { clearTimeout(_fallbackTimer); _fallbackTimer = null; }
+            _resolved = false;
+            _pendingData = null;
         }
+
+        // === Fallback: 60s timer OR tab close — CRM + Zapier, no Meta ===
+        function _sendFallback(keepalive) {
+            if (_resolved || !_pendingData) return;
+            _resolved = true;
+            if (_fallbackTimer) clearTimeout(_fallbackTimer);
+            const data = _pendingData;
+            const insert = _buildLeadInsert(data, { about: '[no_response] ' + data.about });
+            _supabaseInsert(insert, keepalive);
+            _zapierSend(data, { confirmed: false, status: 'no_response_after_popup' }, keepalive);
+        }
+
+        function _onBeforeUnload() { _sendFallback(true); }
 
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -911,8 +942,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 instagram: document.getElementById('f-ig').value,
                 about: 'https://wa.me/4917631793586'
             };
-            _alreadySent = false;
+            _resolved = false;
+
+            // Register fallback: 60s timer + beforeunload
             if (_fallbackTimer) clearTimeout(_fallbackTimer);
+            _fallbackTimer = setTimeout(function() { _sendFallback(false); }, 60000);
+            window.addEventListener('beforeunload', _onBeforeUnload);
 
             // Show confirmation popup
             document.getElementById('dateConfirmPopup').style.display = 'flex';
@@ -933,8 +968,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div style="font-size:32px; margin-bottom:12px;">🍷</div>
             <h3 style="color:#fff; font-size:20px; margin:0 0 8px; font-weight:600;">One last thing</h3>
             <p style="color:rgba(255,255,255,0.7); font-size:15px; line-height:1.5; margin:0 0 24px;">You're applying for a date, not a job.<br>We good?</p>
-            <button onclick="sendLead(_pendingData, true)" style="display:block; width:100%; padding:14px; background:linear-gradient(135deg,#e8b4b8,#d4a0a6); color:#1a1a2e; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer; margin-bottom:10px; transition:transform 0.2s;">Obviously 😄</button>
-            <button onclick="closePopup()" style="display:block; width:100%; padding:12px; background:transparent; color:rgba(255,255,255,0.5); border:1px solid rgba(255,255,255,0.15); border-radius:10px; font-size:14px; cursor:pointer; transition:color 0.2s;">Wait, what?</button>
+            <button onclick="confirmDate()" style="display:block; width:100%; padding:14px; background:linear-gradient(135deg,#e8b4b8,#d4a0a6); color:#1a1a2e; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer; margin-bottom:10px; transition:transform 0.2s;">Obviously 😄</button>
+            <button onclick="rejectDate()" style="display:block; width:100%; padding:12px; background:transparent; color:rgba(255,255,255,0.5); border:1px solid rgba(255,255,255,0.15); border-radius:10px; font-size:14px; cursor:pointer; transition:color 0.2s;">Wait, what?</button>
         </div>
     </div>
 </body>
