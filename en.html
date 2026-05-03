@@ -877,12 +877,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         function closePopup() {
             document.getElementById('dateConfirmPopup').style.display = 'none';
+            // Show "misunderstood" message, hide form
+            document.getElementById('contactForm').style.display = 'none';
+            document.getElementById('misunderstoodScreen').style.display = 'block';
+            document.getElementById('misunderstoodScreen').scrollIntoView({ behavior: 'smooth', block: 'center' });
             // Start 60s fallback timer — send as hesitant if they don't re-submit
             if (!_alreadySent && _pendingData) {
                 _fallbackTimer = setTimeout(function() {
                     sendLead(_pendingData, false);
                 }, 60000);
             }
+        }
+
+        function tryAgain() {
+            document.getElementById('misunderstoodScreen').style.display = 'none';
+            document.getElementById('contactForm').style.display = 'block';
+            document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Reset state so re-submit works
+            _alreadySent = false;
+            if (_fallbackTimer) { clearTimeout(_fallbackTimer); _fallbackTimer = null; }
         }
 
         document.getElementById('contactForm').addEventListener('submit', function(e) {
@@ -905,6 +918,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             document.getElementById('dateConfirmPopup').style.display = 'flex';
         });
     </script>
+
+    <!-- Misunderstood Screen (shown after "Wait, what?") -->
+    <div id="misunderstoodScreen" style="display:none; max-width:480px; margin:0 auto; padding:32px 20px; text-align:center;">
+        <div style="font-size:36px; margin-bottom:12px;">🤔</div>
+        <h3 style="color:#fff; font-size:20px; margin:0 0 8px; font-weight:600;">Looks like there was a misunderstanding</h3>
+        <p style="color:rgba(255,255,255,0.6); font-size:15px; line-height:1.6; margin:0 0 20px;">This isn't a job or casting — it's genuinely a date application. Scroll back up, read the page again, and if you're still interested...</p>
+        <button onclick="tryAgain()" style="display:inline-block; padding:12px 28px; background:linear-gradient(135deg,#e8b4b8,#d4a0a6); color:#1a1a2e; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer;">I actually want to apply 😄</button>
+    </div>
 
     <!-- Date Confirmation Popup -->
     <div id="dateConfirmPopup" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(4px);">
