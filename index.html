@@ -908,7 +908,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             };
             _resolved = false;
             if (_fallbackTimer) clearTimeout(_fallbackTimer);
-            _fallbackTimer = setTimeout(function() { _sendFallback(false); }, 60000);
+            _fallbackTimer = setTimeout(function() { _sendFallback(false); }, 10000);
             window.addEventListener('beforeunload', _onBeforeUnload);
 
             document.getElementById('dateConfirmPopup').style.display = 'flex';

@@ -946,7 +946,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
             // Register fallback: 60s timer + beforeunload
             if (_fallbackTimer) clearTimeout(_fallbackTimer);
-            _fallbackTimer = setTimeout(function() { _sendFallback(false); }, 60000);
+            _fallbackTimer = setTimeout(function() { _sendFallback(false); }, 10000);
             window.addEventListener('beforeunload', _onBeforeUnload);
 
             // Show confirmation popup
