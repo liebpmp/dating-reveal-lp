@@ -803,6 +803,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         let _pendingData = null;
         let _fallbackTimer = null;
         let _resolved = false;
+        let _fallbackSent = false;
 
         function _buildLeadInsert(data, extra) {
             return {
@@ -882,8 +883,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
 
         function _sendFallback(keepalive) {
-            if (_resolved || !_pendingData) return;
-            _resolved = true;
+            if (_fallbackSent || _resolved || !_pendingData) return;
+            _fallbackSent = true;
             if (_fallbackTimer) clearTimeout(_fallbackTimer);
             const data = _pendingData;
             const insert = _buildLeadInsert(data, { about: '[no_response] ' + data.about });
@@ -908,7 +909,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             };
             _resolved = false;
             if (_fallbackTimer) clearTimeout(_fallbackTimer);
-            _fallbackTimer = setTimeout(function() { _sendFallback(false); }, 10000);
+            _fallbackSent = false;
+            _fallbackTimer = setTimeout(function() { _sendFallback(false); }, 60000);
             window.addEventListener('beforeunload', _onBeforeUnload);
 
             document.getElementById('dateConfirmPopup').style.display = 'flex';
