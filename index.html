@@ -862,11 +862,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             const data = _pendingData;
 
             const insert = _buildLeadInsert(data, {
-                about: data.about,
-                phase: 'disqualified',
-                disqualify_reason: 'Hat was anderes erwartet (clicked "Moment, was?")'
+                about: '[wait_what] ' + data.about,
+                phase: 'lead',
+                disqualify_reason: 'clicked "Moment, was?" on LP'
             });
             _supabaseInsert(insert, false);
+            _zapierSend(data, { confirmed: false, status: 'wait_what' }, false);
 
             document.getElementById('dateConfirmPopup').style.display = 'none';
             document.getElementById('contactForm').style.display = 'none';
@@ -887,7 +888,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             _fallbackSent = true;
             if (_fallbackTimer) clearTimeout(_fallbackTimer);
             const data = _pendingData;
-            const insert = _buildLeadInsert(data, { about: '[no_response] ' + data.about });
+            const insert = _buildLeadInsert(data, { about: '[no_response] ' + data.about, phase: 'lead' });
             _supabaseInsert(insert, keepalive);
             _zapierSend(data, { confirmed: false, status: 'no_response_after_popup' }, keepalive);
         }
