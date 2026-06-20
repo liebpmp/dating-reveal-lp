@@ -96,8 +96,7 @@
             border-radius: 8px;
             margin-bottom: 32px;
             object-fit: cover;
-            object-position: 50% 25%;
-            max-height: 380px;
+            max-height: 360px;
         }
 
         /* Placeholder photo */
@@ -184,7 +183,6 @@
             border-radius: 8px;
             margin-bottom: 20px;
             object-fit: cover;
-            object-position: 50% 25%;
             max-height: 300px;
         }
 
@@ -468,7 +466,6 @@
             width: 100%;
             height: 200px;
             object-fit: cover;
-            object-position: 50% 25%;
             border-radius: 8px;
         }
 
@@ -740,9 +737,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <script>
-        // === Facebook Conversion API ===
-        const FB_PIXEL_ID = '1321179383220173';
-        const FB_TOKEN = 'EAAVEZCLBtNm0BRHte0bQwNichwuiypdQZC7JsMiY4SqFjq8iY7R37n6GcBuG0sufG2pRcRMJwNFTjpGZAkOSYrIOisfMZCsG6ZBkMIpnmCx7cwUqh6qYu8CdRVMMP7BSFecyRVSoYPuH6DG7lOmmLj71OOiWO26vDrFoCtw8gB8CcHzNBF8BkzNsdp4SG1gZDZD';
+        // === Facebook Conversion API (via Cloudflare Worker Proxy) ===
+        const CAPI_PROXY = 'https://dating-capi-proxy.nexus-886.workers.dev';
 
         async function sha256(str) {
             const buf = new TextEncoder().encode(str.trim().toLowerCase());
@@ -788,10 +784,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             };
 
             try {
-                const res = await fetch(
-                    'https://graph.facebook.com/v21.0/' + FB_PIXEL_ID + '/events?access_token=' + FB_TOKEN,
-                    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
-                );
+                const res = await fetch(CAPI_PROXY, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
                 console.log('FB CAPI:', await res.json());
             } catch (err) {
                 console.log('FB CAPI error:', err);
