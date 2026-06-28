@@ -773,7 +773,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             return m ? m[2] : null;
         }
 
-        async function sendFBCAPI(formData, eventId) {
+        async function sendFBCAPI(formData, eventId, eventName, customData) {
             const eventTime = Math.floor(Date.now() / 1000);
 
             const userData = {
@@ -791,16 +791,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 userData.ph = [await sha256(formData.phone.replace(/[\s\-]/g, ''))];
             }
 
-            const payload = {
-                data: [{
-                    event_name: 'Lead',
-                    event_time: eventTime,
-                    event_id: eventId,
-                    action_source: 'website',
-                    event_source_url: window.location.href,
-                    user_data: userData
-                }]
+            const eventPayload = {
+                event_name: eventName || 'Lead',
+                event_time: eventTime,
+                event_id: eventId,
+                action_source: 'website',
+                event_source_url: window.location.href,
+                user_data: userData
             };
+            if (customData) eventPayload.custom_data = customData;
+
+            const payload = { data: [eventPayload] };
 
             try {
                 const res = await fetch(CAPI_PROXY, {
@@ -808,7 +809,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                console.log('FB CAPI:', await res.json());
+                console.log('FB CAPI (' + (eventName || 'Lead') + '):', await res.json());
             } catch (err) {
                 console.log('FB CAPI error:', err);
             }
@@ -879,7 +880,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             // Meta Pixel + CAPI
             const eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             fbq('track', 'Lead', {}, { eventID: eventId });
-            sendFBCAPI(data, eventId);
+            sendFBCAPI(data, eventId, 'Lead');
+
+            // Purchase Event mit 10€ Default-Value für Value Bidding
+            const purchaseEventId = 'purchase_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            fbq('track', 'Purchase', { value: 10.00, currency: 'EUR' }, { eventID: purchaseEventId });
+            sendFBCAPI(data, purchaseEventId, 'Purchase', { value: 10.00, currency: 'EUR' });
 
             // Show success
             document.getElementById('dateConfirmPopup').style.display = 'none';
